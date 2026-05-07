@@ -1,0 +1,37 @@
+{
+  "comments": [
+    {
+      "id": "c1",
+      "platform": "instagram",
+      "author": "@mira",
+      "text": "This is gold!",
+      "category": "praise",
+      "createdAt": "2026-04-25T09:12:00Z"
+    },
+    {
+      "id": "c2",
+      "platform": "linkedin",
+      "author": "Rohit",
+      "text": "Where can I learn more?",
+      "category": "question",
+      "createdAt": "2026-04-26T14:00:00Z"
+    },
+    {
+      "id": "c3",
+      "platform": "youtube",
+      "author": "Akira",
+      "text": "Disagree, here's why...",
+      "category": "feedback",
+      "createdAt": "2026-04-27T18:21:00Z"
+    },
+    {
+      "id": "c4",
+      "platform": "instagram",
+      "author": "@kev",
+      "text": "Spammy DM stuff",
+      "category": "spam",
+      "createdAt": "2026-04-28T07:05:00Z"
+    }
+  ],
+  "template": "Thanks!"
+}

@@ -1,0 +1,39 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: growthbrother-backend:latest
+    env_file:
+      - ./backend/.env
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend_uploads:/app/uploads
+      - backend_tokens:/app/tokens
+      - backend_repurpose:/app/repurpose_output
+      - backend_ai_assets:/app/ai_assets
+      - backend_state:/app/state
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./publish-prism-flow/frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL:-http://localhost:8000}
+        VITE_AI_CONTENT_AGENT_URL: ${VITE_AI_CONTENT_AGENT_URL:-http://localhost:8000}
+    image: growthbrother-frontend:latest
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  backend_uploads:
+  backend_tokens:
+  backend_repurpose:
+  backend_ai_assets:
+  backend_state:

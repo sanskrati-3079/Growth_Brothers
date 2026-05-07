@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Never bake secrets or local state into the image.
+.env
+.env.local
+tokens/
+uploads/
+repurpose_output/
+ai_assets/
+jobs.json
+users.json
+engagement.json
+publish_log.json
+
+.git/
+.gitignore
+.dockerignore
+README.md

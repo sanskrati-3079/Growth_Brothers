@@ -1,0 +1,102 @@
+{
+  "94ed100d": {
+    "job_id": "94ed100d",
+    "platform": "instagram",
+    "account_id": null,
+    "title": "Demo slot",
+    "status": "draft",
+    "media_path": null,
+    "thumbnail_path": null,
+    "post_data": {
+      "platform": "instagram",
+      "title": "Demo slot",
+      "message": "",
+      "scheduled_at": "2026-06-01T10:00:00+00:00",
+      "timezone": "UTC"
+    },
+    "media_id": null,
+    "media_url": null,
+    "error": null,
+    "created_at": "2026-05-01T18:33:21.464357+00:00"
+  },
+  "b8e42599": {
+    "job_id": "b8e42599",
+    "platform": "linkedin",
+    "account_id": null,
+    "title": "Scheduled linkedin slot",
+    "status": "draft",
+    "media_path": null,
+    "thumbnail_path": null,
+    "post_data": {
+      "platform": "linkedin",
+      "title": "Scheduled linkedin slot",
+      "message": "",
+      "scheduled_at": "2026-05-01T18:50:00+00:00",
+      "timezone": "UTC"
+    },
+    "media_id": null,
+    "media_url": null,
+    "error": null,
+    "created_at": "2026-05-01T18:49:30.926273+00:00"
+  },
+  "f48036c8": {
+    "job_id": "f48036c8",
+    "platform": "youtube",
+    "account_id": null,
+    "title": "New Post",
+    "status": "draft",
+    "media_path": null,
+    "thumbnail_path": null,
+    "post_data": {
+      "platform": "youtube",
+      "title": "New Post",
+      "message": "",
+      "scheduled_at": "2026-05-05T04:30:00+00:00",
+      "timezone": "UTC"
+    },
+    "media_id": null,
+    "media_url": null,
+    "error": null,
+    "created_at": "2026-05-05T13:54:26.798914+00:00"
+  },
+  "244f9548": {
+    "job_id": "244f9548",
+    "platform": "tiktok",
+    "account_id": null,
+    "title": "Scheduled tiktok slot",
+    "status": "draft",
+    "media_path": null,
+    "thumbnail_path": null,
+    "post_data": {
+      "platform": "tiktok",
+      "title": "Scheduled tiktok slot",
+      "message": "",
+      "scheduled_at": "2026-05-05T04:30:00+00:00",
+      "timezone": "UTC"
+    },
+    "media_id": null,
+    "media_url": null,
+    "error": null,
+    "created_at": "2026-05-05T13:54:36.809782+00:00"
+  },
+  "ccaeddb9": {
+    "job_id": "ccaeddb9",
+    "platform": "linkedin",
+    "account_id": null,
+    "title": "Motivation",
+    "status": "draft",
+    "media_path": null,
+    "thumbnail_path": null,
+    "post_data": {
+      "platform": "linkedin",
+      "title": "Motivation",
+      "message": "",
+      "scheduled_at": "2026-05-06T06:30:00+00:00",
+      "timezone": "UTC"
+    },
+    "media_id": null,
+    "media_url": null,
+    "error": null,
+    "created_at": "2026-05-05T14:05:54.812694+00:00"
+  }
+}

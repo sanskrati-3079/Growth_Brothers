@@ -1,0 +1,37 @@
+{
+  "s1777659901@example.com": {
+    "id": "e6624c3c956f4a16b13453a29dbd90f4",
+    "name": "Sanskrati",
+    "email": "s1777659901@example.com",
+    "password_hash": "$2b$12$.6z3CfsC4AgXLQso18yA0OpE3scNQASsD0Iq0szMtQAgmaH.PxeUG",
+    "created_at": "2026-05-01T18:25:02.077736+00:00"
+  },
+  "u1777660394@example.com": {
+    "id": "33463c48e831477da02340521d529177",
+    "name": "Test",
+    "email": "u1777660394@example.com",
+    "password_hash": "$2b$12$zISvNsDj7TAnwiOFE85ENu63wNwmrzBVcdq3XcOAhylx85wuAQ4CG",
+    "created_at": "2026-05-01T18:33:14.872199+00:00"
+  },
+  "rishabhtripathi_cs.aiml22@gla.ac.in": {
+    "id": "78c597881908427887e4fca46049d54d",
+    "name": "Rishabh Tripathi",
+    "email": "rishabhtripathi_cs.aiml22@gla.ac.in",
+    "password_hash": "$2b$12$pYZlOW7b/ppSUzKNUa780O9YSfBMBG/O9hNxBknH2NHnKgxpK0OmO",
+    "created_at": "2026-05-01T18:40:06.478598+00:00"
+  },
+  "rishabhtripathi.9984@gmail.com": {
+    "id": "9af81f01ed644db081cfbdcb80f76779",
+    "name": "Rishabh",
+    "email": "rishabhtripathi.9984@gmail.com",
+    "password_hash": "$2b$12$eSXUjRwOBAbuEI0ZSOxSr.YD4vI2xZjegLB.ICgMf8D5kOMkL4hbK",
+    "created_at": "2026-05-05T13:49:52.601747+00:00"
+  },
+  "codora.ai@gmail.com": {
+    "id": "178e10dcdb7f49e8be99f25b107917f7",
+    "name": "Codora ai",
+    "email": "codora.ai@gmail.com",
+    "password_hash": "$2b$12$PN8Q1w4ezM23rif9ReQQ4ugeDjdatRNeBjLD0AWEn1Pv7I9JDVljC",
+    "created_at": "2026-05-05T14:05:03.762432+00:00"
+  }
+}
