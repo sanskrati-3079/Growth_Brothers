@@ -80,8 +80,9 @@ export default function AIStudio() {
   });
   const [isGeneratingNarrative, setIsGeneratingNarrative] = useState(false);
   const [narrativeError, setNarrativeError] = useState("");
-  const [shareFeedback, setShareFeedback] = useState("");
+  const [platformResults, setPlatformResults] = useState({});
   const [isPostingPlatform, setIsPostingPlatform] = useState("");
+  const [isPostingAll, setIsPostingAll] = useState(false);
   const [slides, setSlides] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(false);
   const [carouselError, setCarouselError] = useState("");
@@ -100,7 +101,7 @@ export default function AIStudio() {
       facebook: `Reminder: ${keyword} is not a finish line but a mindset. Celebrate tiny wins and invite your community along.`,
     });
     setAiAssets({ quoteImage: "", blogDoc: "", blogCover: "" });
-    setShareFeedback("");
+    setPlatformResults({});
   };
 
   const handleNarrativeGeneration = async () => {
@@ -110,8 +111,7 @@ export default function AIStudio() {
     }
     setNarrativeError("");
     setIsGeneratingNarrative(true);
-
-    setShareFeedback("");
+    setPlatformResults({});
     const topic = ideaPrompt.trim();
     try {
 
@@ -185,35 +185,57 @@ export default function AIStudio() {
     }
   };
 
-  const handleShare = async (platform) => {
+  const postOnePlatform = async (platform) => {
     const copy = aiNarratives[platform];
-    if (!copy) return;
-    setShareFeedback("");
+    if (!copy) throw new Error("No content");
+    const response = await fetch(`${API_BASE_URL}/publishing/motivation`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        platform,
+        content: copy,
+        topic: ideaPrompt.trim() || undefined,
+      }),
+    });
+    if (!response.ok) {
+      const msg = await response.text();
+      throw new Error(msg || `Status ${response.status}`);
+    }
+    return true;
+  };
+
+  const handleShare = async (platform) => {
     setIsPostingPlatform(platform);
-
+    setPlatformResults((r) => ({ ...r, [platform]: { status: "loading" } }));
     try {
-      const response = await fetch(`${API_BASE_URL}/publishing/motivation`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          platform,
-          content: copy,
-          topic: ideaPrompt.trim() || undefined,
-        }),
-      });
-
-      if (!response.ok) {
-        const message = await response.text();
-        throw new Error(message || "Failed to post content");
-      }
-
-      setShareFeedback(`Posted to ${platform}. Check the automation webhook logs for confirmation.`);
-    } catch (error) {
-      console.error("Share error", error);
-      setShareFeedback(`Unable to post to ${platform}. ${error.message || "Please try again."}`);
+      await postOnePlatform(platform);
+      setPlatformResults((r) => ({ ...r, [platform]: { status: "ok" } }));
+    } catch (err) {
+      setPlatformResults((r) => ({ ...r, [platform]: { status: "error", msg: err.message } }));
     } finally {
       setIsPostingPlatform("");
     }
+  };
+
+  const handleShareAll = async () => {
+    const targets = SOCIAL_PLATFORMS.filter((p) => aiNarratives[p.key]);
+    if (!targets.length) return;
+    setIsPostingAll(true);
+    setPlatformResults({});
+    targets.forEach((p) =>
+      setPlatformResults((r) => ({ ...r, [p.key]: { status: "loading" } }))
+    );
+    await Promise.allSettled(
+      targets.map(async ({ key }) => {
+        try {
+          await postOnePlatform(key);
+          setPlatformResults((r) => ({ ...r, [key]: { status: "ok" } }));
+        } catch (err) {
+          setPlatformResults((r) => ({ ...r, [key]: { status: "error", msg: err.message } }));
+        }
+      })
+    );
+    setIsPostingAll(false);
   };
 
   return (
@@ -324,30 +346,65 @@ export default function AIStudio() {
             <img src={aiAssets.quoteImage} alt="Motivational quote" className="mt-2 w-full rounded-xl object-cover" />
           </div>
         )}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {SOCIAL_PLATFORMS.map((platform) => (
-            <div key={platform.key} className="flex flex-col rounded-2xl border border-slate-200 p-4 shadow-sm">
-              <div className="flex items-center justify-between text-sm font-semibold text-primary-dark">
-                <span>{platform.label}</span>
-                <span className="text-xs uppercase tracking-wide text-slate-400">Motivation</span>
-              </div>
-              <p className="mt-3 flex-1 whitespace-pre-wrap text-sm text-slate-600">
-                {aiNarratives[platform.key] || "Run the generator to craft this post."}
+        {/* ── Post to All button ── */}
+        {SOCIAL_PLATFORMS.some((p) => aiNarratives[p.key]) && (
+          <div className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-primary-dark to-secondary p-4">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-white">Post to all platforms at once</p>
+              <p className="text-xs text-white/70 mt-0.5">
+                Publishes Instagram + LinkedIn + Facebook simultaneously
               </p>
-              <button
-                type="button"
-                onClick={() => handleShare(platform.key)}
-                disabled={!aiNarratives[platform.key] || isPostingPlatform === platform.key}
-                className="mt-4 rounded-xl border border-primary/20 px-3 py-2 text-xs font-semibold text-primary-dark transition hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isPostingPlatform === platform.key ? "Posting..." : `Post to ${platform.label}`}
-              </button>
             </div>
-          ))}
-        </div>
-        {shareFeedback && (
-          <p className="text-xs text-primary-dark">{shareFeedback}</p>
+            <button
+              type="button"
+              onClick={handleShareAll}
+              disabled={isPostingAll || isPostingPlatform !== ""}
+              className="shrink-0 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-primary-dark shadow-soft transition hover:shadow-glow disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isPostingAll ? "Posting..." : "Post to All"}
+            </button>
+          </div>
         )}
+
+        {/* ── Per-platform cards ── */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          {SOCIAL_PLATFORMS.map((platform) => {
+            const result = platformResults[platform.key];
+            return (
+              <div key={platform.key} className="flex flex-col rounded-2xl border border-slate-200 p-4 shadow-sm">
+                <div className="flex items-center justify-between text-sm font-semibold text-primary-dark">
+                  <span>{platform.label}</span>
+                  {result?.status === "ok" && (
+                    <span className="badge badge-success">Posted</span>
+                  )}
+                  {result?.status === "error" && (
+                    <span className="badge badge-danger">Failed</span>
+                  )}
+                  {result?.status === "loading" && (
+                    <span className="badge badge-neutral">Posting…</span>
+                  )}
+                  {!result && (
+                    <span className="text-xs uppercase tracking-wide text-slate-400">Motivation</span>
+                  )}
+                </div>
+                <p className="mt-3 flex-1 whitespace-pre-wrap text-sm text-slate-600">
+                  {aiNarratives[platform.key] || "Run the generator to craft this post."}
+                </p>
+                {result?.status === "error" && (
+                  <p className="mt-2 text-xs text-danger">{result.msg}</p>
+                )}
+                <button
+                  type="button"
+                  onClick={() => handleShare(platform.key)}
+                  disabled={!aiNarratives[platform.key] || isPostingPlatform === platform.key || isPostingAll}
+                  className="mt-4 rounded-xl border border-primary/20 px-3 py-2 text-xs font-semibold text-primary-dark transition hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isPostingPlatform === platform.key ? "Posting…" : result?.status === "ok" ? "Post again" : `Post to ${platform.label}`}
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

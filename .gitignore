@@ -1,5 +1,120 @@
-*.mov
-*.mp4
+# ----------------------
+# Python
+# ----------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy / Ruff / Lint
+.mypy_cache/
+.ruff_cache/
+
+# ----------------------
+# Node.js
+# ----------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build folders
+.next/
+out/
+dist/
+build/
+
+# ----------------------
+# Environment Variables
+# ----------------------
 .env
-.env.local
-**/.env
+.env.*
+!.env.example
+
+# ----------------------
+# Logs
+# ----------------------
+logs/
+*.log
+
+# ----------------------
+# OS Files
+# ----------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------
+# IDE / Editor
+# ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ----------------------
+# AI / ML
+# ----------------------
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pickle
+*.pkl
+
+# Dataset folders
+data/
+datasets/
+
+# Model outputs
+outputs/
+runs/
+checkpoints/
+
+# ----------------------
+# Audio / Video / Media
+# ----------------------
+*.mp3
+*.wav
+*.mp4
+*.avi
+*.mov
+
+# ----------------------
+# Temporary Files
+# ----------------------
+tmp/
+temp/
+.cache/
+
+# ----------------------
+# Docker
+# ----------------------
+*.tar
+
+# ----------------------
+# Misc
+# ----------------------
+*.sqlite3
+*.db
