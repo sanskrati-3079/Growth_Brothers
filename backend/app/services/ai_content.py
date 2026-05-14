@@ -61,12 +61,20 @@ def generate_quote_text(topic: str) -> str:
 # ── Quote image (Pillow) ──────────────────────────────────────────────────
 
 def _load_font(size: int) -> ImageFont.FreeTypeFont:
-    """Try a few common system fonts, fall back to default bitmap font."""
+    """Try common system fonts across Windows / Mac / Linux, fall back to default."""
     candidates = [
+        # Windows
+        "C:/Windows/Fonts/arialbd.ttf",
+        "C:/Windows/Fonts/arial.ttf",
+        "C:/Windows/Fonts/calibrib.ttf",
+        "C:/Windows/Fonts/segoeui.ttf",
+        # macOS
         "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
         "/Library/Fonts/Arial Bold.ttf",
+        # Linux
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
     ]
     for path in candidates:
         if Path(path).exists():

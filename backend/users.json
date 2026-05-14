@@ -33,5 +33,33 @@
     "email": "codora.ai@gmail.com",
     "password_hash": "$2b$12$PN8Q1w4ezM23rif9ReQQ4ugeDjdatRNeBjLD0AWEn1Pv7I9JDVljC",
     "created_at": "2026-05-05T14:05:03.762432+00:00"
+  },
+  "test@growthbro.com": {
+    "id": "d44e5e6247bf4cf7a61e001af6ed7544",
+    "name": "Test User",
+    "email": "test@growthbro.com",
+    "password_hash": "$2b$12$a8DVYZ/8tQOllgAlBnwPbuJ/7BB2Thsv/201xkKZ/zJrvCQ1TyBJe",
+    "created_at": "2026-05-12T16:51:24.649907+00:00"
+  },
+  "sanskratiagra@gmail.com": {
+    "id": "6780dafdd5a64e8d964a162bf7080a98",
+    "name": "Sanskrati Agrawal",
+    "email": "sanskratiagra@gmail.com",
+    "password_hash": "$2b$12$gOopb3HbjNviffEs9gDfpOy366nTSWVVXJ2g9pF7EAk5PjWERlDu2",
+    "created_at": "2026-05-12T16:53:47.052240+00:00"
+  },
+  "demo2@growthbro.com": {
+    "id": "1add11f7e00948279707e8b52e75bba6",
+    "name": "Demo User",
+    "email": "demo2@growthbro.com",
+    "password_hash": "$2b$12$6Rg4D3L5OCRyaS26rpye1OY5um/56BcVCDKGZJBLr57XF1iqtI.Si",
+    "created_at": "2026-05-12T17:04:12.113366+00:00"
+  },
+  "demo3@growthbro.com": {
+    "id": "b29351a0fa874312a6db26d5a6412aef",
+    "name": "Demo User",
+    "email": "demo3@growthbro.com",
+    "password_hash": "$2b$12$jnnsEW3Wq8yCz3L7wkRUneXv/Hf5W/F5Wj9E4yykeV.8i9FCdvE7K",
+    "created_at": "2026-05-12T17:04:26.689180+00:00"
   }
 }

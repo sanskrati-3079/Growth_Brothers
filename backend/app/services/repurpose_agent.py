@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from typing import Tuple
 
@@ -19,18 +20,36 @@ from fastapi import HTTPException
 
 from app.config import settings
 
+# Directory where venv-installed binaries live (yt-dlp, ffmpeg wrappers, etc.)
+_VENV_BIN = Path(sys.executable).parent
 
-def _require_binary(name: str) -> None:
-    """Raise 500 with a clear install hint if a required CLI tool is missing."""
-    if shutil.which(name) is None:
-        hint = {
-            "ffmpeg": "Install with `brew install ffmpeg` (macOS) or `apt-get install ffmpeg` (Linux).",
-            "yt-dlp": "Install with `pip install yt-dlp`.",
-        }.get(name, "")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Required binary '{name}' not found on PATH. {hint}".strip(),
-        )
+
+def _resolve_binary(name: str) -> str:
+    """Return the full path to a CLI binary.
+
+    Search order:
+      1. System PATH  (shutil.which)
+      2. The active venv's Scripts / bin directory
+    Raises HTTPException(500) if not found anywhere.
+    """
+    # System PATH first
+    found = shutil.which(name)
+    if found:
+        return found
+
+    # Try venv directory (Windows .exe, Unix no extension)
+    for candidate in [_VENV_BIN / name, _VENV_BIN / f"{name}.exe"]:
+        if candidate.exists():
+            return str(candidate)
+
+    hint = {
+        "ffmpeg": "Install ffmpeg and add it to PATH.",
+        "yt-dlp": "Run: pip install yt-dlp",
+    }.get(name, "")
+    raise HTTPException(
+        status_code=500,
+        detail=f"Required binary '{name}' not found. {hint}".strip(),
+    )
 
 
 def get_openai_client():
@@ -44,8 +63,8 @@ def get_openai_client():
 
 def download_youtube(url: str, output_dir: Path) -> Tuple[str, str]:
     """Download a YouTube video and extract a transcription-ready audio track."""
-    _require_binary("yt-dlp")
-    _require_binary("ffmpeg")
+    ytdlp = _resolve_binary("yt-dlp")
+    ffmpeg = _resolve_binary("ffmpeg")
 
     video_path = str(output_dir / "video.mp4")
     audio_path = str(output_dir / "audio.mp3")
@@ -53,7 +72,7 @@ def download_youtube(url: str, output_dir: Path) -> Tuple[str, str]:
     try:
         subprocess.run(
             [
-                "yt-dlp",
+                ytdlp,
                 "-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]",
                 "--merge-output-format", "mp4",
                 "-o", video_path,
@@ -61,7 +80,8 @@ def download_youtube(url: str, output_dir: Path) -> Tuple[str, str]:
             ],
             check=True,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except subprocess.CalledProcessError as e:
         raise HTTPException(
@@ -72,13 +92,14 @@ def download_youtube(url: str, output_dir: Path) -> Tuple[str, str]:
     try:
         subprocess.run(
             [
-                "ffmpeg", "-i", video_path,
+                ffmpeg, "-i", video_path,
                 "-vn", "-ar", "16000", "-ac", "1", "-b:a", "64k",
                 audio_path, "-y",
             ],
             check=True,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except subprocess.CalledProcessError as e:
         raise HTTPException(
@@ -91,17 +112,18 @@ def download_youtube(url: str, output_dir: Path) -> Tuple[str, str]:
 
 def extract_audio(video_path: str, audio_path: str) -> None:
     """Extract a Whisper-friendly audio track from any video file."""
-    _require_binary("ffmpeg")
+    ffmpeg = _resolve_binary("ffmpeg")
     try:
         subprocess.run(
             [
-                "ffmpeg", "-i", video_path,
+                ffmpeg, "-i", video_path,
                 "-vn", "-ar", "16000", "-ac", "1", "-b:a", "64k",
                 audio_path, "-y",
             ],
             check=True,
             capture_output=True,
-            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except subprocess.CalledProcessError as e:
         raise HTTPException(
@@ -192,13 +214,15 @@ Return ONLY the JSON object. No markdown, no explanation.
 
 
 def cut_clip(video_path: str, start: float, end: float, output_path: str, padding: float = 1.0) -> bool:
-    if shutil.which("ffmpeg") is None:
+    try:
+        ffmpeg = _resolve_binary("ffmpeg")
+    except Exception:
         return False
     start_padded = max(0, start - padding)
     duration = (end + padding) - start_padded
     result = subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg,
             "-ss", str(start_padded),
             "-i", video_path,
             "-t", str(duration),
@@ -208,19 +232,22 @@ def cut_clip(video_path: str, start: float, end: float, output_path: str, paddin
             output_path, "-y",
         ],
         capture_output=True,
-        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     return result.returncode == 0
 
 
 def extract_audio_snippet(audio_path: str, start: float, end: float, output_path: str) -> bool:
-    if shutil.which("ffmpeg") is None:
+    try:
+        ffmpeg = _resolve_binary("ffmpeg")
+    except Exception:
         return False
     start_padded = max(0, start - 0.5)
     duration = (end + 0.5) - start_padded
     result = subprocess.run(
         [
-            "ffmpeg",
+            ffmpeg,
             "-ss", str(start_padded),
             "-i", audio_path,
             "-t", str(duration),
